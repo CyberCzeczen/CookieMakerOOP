@@ -1,0 +1,43 @@
+.cookie-preview{
+    width: 604px;
+    height: 640px;
+}
+.error{
+    border: 1px solid red;
+    padding: 10px;
+    background-color: salmon;
+}
+.success{
+    border: 1px solid green;
+    padding: 10px;
+    background-color: lightgreen;
+}
+
+.btn {
+    background: #edafba;
+    border: 1px solid #bd005b;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 5px;
+    margin: 2px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.btn-small {
+    padding: 0 5px;
+    margin: 0;
+}
+
+.btn-disabled {
+    background: gray;
+    color: #202021;
+    cursor: not-allowed;
+    border: black;
+    pointer-events: none;
+}
+
+.btn-order-now {
+    width: 20%;
+    height: 20%;
+}
