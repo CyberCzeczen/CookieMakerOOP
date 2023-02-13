@@ -10,6 +10,7 @@ const {COOKIE_BASES, COOKIE_ADDONS} = require("./data/cookie-data");
 
 class CookieMakerApp {
     constructor() {
+        this._loadData();
         this._configureApp();
         this._setRoutes();
         this._run();
@@ -55,8 +56,8 @@ class CookieMakerApp {
 
         const addons = this.getAddonsFromReq(req);
 
-        const allBases = Object.entries(COOKIE_BASES);
-        const allAddons = Object.entries(COOKIE_ADDONS);
+        const allBases = Object.entries(this.data.COOKIE_BASES);
+        const allAddons = Object.entries(this.data.COOKIE_ADDONS);
 
         const sum = (base? handlebarsHelpers.findPrice(allBases, base) : 0) + addons.reduce((prev, curr) => (
             prev + handlebarsHelpers.findPrice(allAddons, curr)
@@ -73,6 +74,13 @@ class CookieMakerApp {
             //all possibilities
             allBases,
             allAddons,
+        }
+    }
+
+    _loadData() {
+        this.data = {
+            COOKIE_BASES,
+            COOKIE_ADDONS,
         }
     }
 }
