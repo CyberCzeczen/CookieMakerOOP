@@ -1,10 +1,11 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const hbs = require('express-handlebars');
-const {configuratorRouter} = require('./routes/configurator');
+const {ConfiguratorRouter} = require('./routes/configurator');
 const {HomeRouter} = require('./routes/home');
-const {orderRouter} = require('./routes/order');
+const {OrderRouter} = require('./routes/order');
 const {handlebarsHelpers} = require("./utils/handlebars-helpers");
+const {COOKIE_BASES, COOKIE_ADDONS} = require("./data/cookie-data");
 
 
 class CookieMakerApp {
@@ -27,15 +28,52 @@ class CookieMakerApp {
     }
 
     _setRoutes() {
-        this.app.use('/', new HomeRouter().router);
-        this.app.use('/configurator', configuratorRouter);
-        this.app.use('/order', orderRouter);
+        this.app.use('/', new HomeRouter(this).router);
+        this.app.use('/configurator', new ConfiguratorRouter(this).router);
+        this.app.use('/order', new OrderRouter(this).router);
     }
 
     _run() {
         this.app.listen(3000, 'localhost', () => {
             console.log(`Listening on http://localhost:3000`);
         });
+    }
+
+    showErrorPage(res, description) {
+        res.render('error', {
+            description,
+        });
+    }
+
+    getAddonsFromReq(req) {
+        const {cookieAddons} = req.cookies;
+        return cookieAddons ? JSON.parse(cookieAddons) : [];
+    }
+
+    getCookieSettings(req) {
+        const {cookieBase: base} = req.cookies;
+
+        const addons = this.getAddonsFromReq(req);
+
+        const allBases = Object.entries(COOKIE_BASES);
+        const allAddons = Object.entries(COOKIE_ADDONS);
+
+        const sum = (base? handlebarsHelpers.findPrice(allBases, base) : 0) + addons.reduce((prev, curr) => (
+            prev + handlebarsHelpers.findPrice(allAddons, curr)
+        ), 0);
+
+        return {
+            // Selected Stuff
+            addons,
+            base,
+
+            //calculations
+            sum,
+
+            //all possibilities
+            allBases,
+            allAddons,
+        }
     }
 }
 
